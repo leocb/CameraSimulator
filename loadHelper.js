@@ -1,3 +1,6 @@
+let imgFan = multidimensionalArray(3, 3, 5, 7);
+let imgBg = multidimensionalArray(3, 7);
+
 const F1_4 = 0
 const F2_8 = 1
 const F5_6 = 2
@@ -15,19 +18,27 @@ const ISO12800 = 4
 
 function preLoadImages() {
     // ISO Overlay
-    IsoOverlayGraphics.push(loadImage('ISO-Overlay/ISO50.jpg'))
-    IsoOverlayGraphics.push(loadImage('ISO-Overlay/ISO200.jpg'))
-    IsoOverlayGraphics.push(loadImage('ISO-Overlay/ISO800.jpg'))
-    IsoOverlayGraphics.push(loadImage('ISO-Overlay/ISO3200.jpg'))
-    IsoOverlayGraphics.push(loadImage('ISO-Overlay/ISO12800.jpg'))
+    IsoOverlayGraphics.push(loadImage('Images/ISO/ISO50.jpg'))
+    IsoOverlayGraphics.push(loadImage('Images/ISO/ISO200.jpg'))
+    IsoOverlayGraphics.push(loadImage('Images/ISO/ISO800.jpg'))
+    IsoOverlayGraphics.push(loadImage('Images/ISO/ISO3200.jpg'))
+    IsoOverlayGraphics.push(loadImage('Images/ISO/ISO12800.jpg'))
 
-    // Images
+    // Background
+    for (let f = 0; f < 3; f++) {
+        for (let k = 0; k < 7; k++) {
+            let imagePath = `Images/Background/${fToName(f)}-${k + 1}.jpg`
+            imgBg[f][k] = (loadImage(imagePath))
+        }
+    }
+
+    // Fan Animation Images
     for (let f = 0; f < 3; f++) {
         for (let s = 0; s < 3; s++) {
             for (let i = 0; i < 5; i++) {
                 for (let k = 0; k < 7; k++) {
-                    let imagePath = `Images/${fToName(f)}-${sToName(s)}-${iToName(i)}-${k+1}.jpg`
-                    img[f][s][i][k] = (loadImage(imagePath))
+                    let imagePath = `Images/Fan/7/${fToName(f)}-${sToName(s)}-${iToName(i)}-${k + 1}.jpg`
+                    imgFan[f][s][i][k] = (loadImage(imagePath))
                 }
             }
         }

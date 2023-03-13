@@ -1,6 +1,5 @@
 // Main
 let scaling
-let img = multidimensionalArray(3, 3, 5, 7);
 const imgW = 2048
 const imgH = 858
 
@@ -23,6 +22,7 @@ const ZoomTextXpos = IsoXpos + elementsWidth + elementsSpacing*2
 let currF = F1_4
 let currS = S120
 let currI = ISO200
+let currBgEv = 0
 
 // Overlay
 const IsoOverlayOverflow = (3000 - imgW) // ISO overlay image width - main image width
@@ -91,6 +91,9 @@ function draw() {
         currI = currF + currS
     }
 
+    // Background EV
+    currBgEv = (2-currS)+currI
+
     // Move ISO Noise
     IsoOverlayXpos = (IsoOverlayXpos + 40 + Math.random() * (IsoOverlayOverflow / 2)) % IsoOverlayOverflow
 
@@ -126,7 +129,8 @@ function draw() {
 function drawMovie(graphics, offset) {
     graphics.blendMode(BLEND)
     graphics.background(0)
-    graphics.image(img[currF][currS][currI][frameCount % 7], offset.x, offset.y);
+    graphics.image(imgBg[currF][currBgEv], offset.x, offset.y);
+    graphics.image(imgFan[currF][currS][currI][frameCount % 7], offset.x + 255, offset.y + 198);
     graphics.blendMode(SCREEN)
     graphics.image(IsoOverlayGraphics[currI], - IsoOverlayXpos + offset.x, offset.y);
     graphics.blendMode(BLEND)
