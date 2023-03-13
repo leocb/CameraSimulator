@@ -90,3 +90,38 @@ function iToName(i) {
             return "ISO12800"
     }
 }
+
+function fToPretty(f) {
+    switch (f) {
+        case (F1_4):
+            return "1.4f"
+        case (F2_8):
+            return "2.8f"
+        case (F5_6):
+            return "5.6f"
+    }
+}
+function sToPretty(s) {
+    switch (s) {
+        case (S30):
+            return "1/30"
+        case (S120):
+            return "1/120"
+        case (S480):
+            return "1/480"
+    }
+}
+function iToPretty(i) {
+    switch (i) {
+        case (ISO50):
+            return "50"
+        case (ISO200):
+            return "200"
+        case (ISO800):
+            return "800"
+        case (ISO3200):
+            return "3200"
+        case (ISO12800):
+            return "12800"
+    }
+}
