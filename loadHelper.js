@@ -22,13 +22,11 @@ function preLoadImages() {
     IsoOverlayGraphics.push(loadImage('ISO-Overlay/ISO12800.jpg'))
 
     // Images
-    console.log(img)
-    for (let f = 0; f < 1; f++) {
-        for (let s = 0; s < 1; s++) {
-            for (let i = 0; i < 1; i++) {
+    for (let f = 0; f < 3; f++) {
+        for (let s = 0; s < 3; s++) {
+            for (let i = 0; i < 5; i++) {
                 for (let k = 0; k < 7; k++) {
                     let imagePath = `Images/${fToName(f)}-${sToName(s)}-${iToName(i)}-${k+1}.jpg`
-                    console.log(imagePath)
                     img[f][s][i][k] = (loadImage(imagePath))
                 }
             }
