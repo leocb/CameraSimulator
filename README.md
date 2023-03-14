@@ -15,3 +15,8 @@ This app allows you to:
 - Change the F-stop
 - Change the Shutter Speed
 - Change the ISO or set it to AUTO
+
+## Credits
+
+- @leocb - Rendering, cropping, p5 sketch code
+- Barbershop scene - Blender file by Blender foundation @ <https://www.blender.org/download/demo-files/#cycles>
