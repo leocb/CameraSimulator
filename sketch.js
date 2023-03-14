@@ -16,7 +16,7 @@ const elementsSpacing = 40
 const FstopXpos = elementsSpacing / 2
 const ShutterXpos = FstopXpos + elementsWidth + elementsSpacing
 const IsoXpos = ShutterXpos + elementsWidth + elementsSpacing
-const ZoomTextXpos = IsoXpos + elementsWidth + elementsSpacing*2
+const ZoomTextXpos = IsoXpos + elementsWidth + elementsSpacing * 2
 
 // Values
 let currF = F1_4
@@ -33,10 +33,6 @@ let IsoOverlayXpos = 0
 let zoomGraphics
 const zoomWindowSize = 200
 const zoomScale = 2.5
-
-function preload() {
-    preLoadImages()
-}
 
 function setup() {
     createCanvas(1, 1);
@@ -61,8 +57,9 @@ function setup() {
 
     IsoSlider = createSlider(0, 4, currI)
     IsoSlider.size(elementsWidth)
-    IsoSlider.style('visibility', 'hidden')
+
     positionStuff()
+    preLoadImages()
 }
 
 function windowResized() {
@@ -77,11 +74,21 @@ function positionStuff() {
     FstopSlider.position(FstopXpos, uiElementY)
     ShutterSlider.position(ShutterXpos, uiElementY)
     IsoSlider.position(IsoXpos, uiElementY)
-    IsoAuto.position(IsoXpos + elementsWidth-18, uiElementY - 21)
+    IsoAuto.position(IsoXpos + elementsWidth - 18, uiElementY - 21)
 }
 
 function draw() {
-    // Update values:
+    // Wait here until everything is done loading
+    if (isLoading) {
+        background(0)
+        push()
+        textAlign(CENTER, CENTER)
+        text(`Loading: ${Math.round(progress * 100, 2)}%`, width / 2, height / 2)
+        pop()
+        return
+    }
+
+    // Update values
     currF = FstopSlider.value()
     currS = ShutterSlider.value()
     currI = IsoSlider.value()
@@ -92,7 +99,7 @@ function draw() {
     }
 
     // Background EV
-    currBgEv = (2-currS)+currI
+    currBgEv = (2 - currS) + currI
 
     // Move ISO Noise
     IsoOverlayXpos = (IsoOverlayXpos + 40 + Math.random() * (IsoOverlayOverflow / 2)) % IsoOverlayOverflow
