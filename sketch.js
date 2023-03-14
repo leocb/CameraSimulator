@@ -20,7 +20,6 @@ const FstopXpos = elementsSpacing / 2
 const ShutterXpos = FstopXpos + elementsWidth + elementsSpacing
 const IsoXpos = ShutterXpos + elementsWidth + elementsSpacing
 const WbXpos = IsoXpos + elementsWidth + elementsSpacing
-const ZoomTextXpos = WbXpos + elementsWidth*2 + elementsSpacing
 
 // Values
 let currF = F1_4
@@ -138,7 +137,7 @@ function draw() {
     pop()
 
     // ZOOM image if mouse is pressed
-    if (mouseIsPressed && mouseY < imgH * scaling) {
+    if (mouseY < imgH * scaling) {
         // Draw image relative to mouse pos
         drawMovie(zoomGraphics, {
             x: (-mouseX + (zoomWindowSize / zoomScale) / zoomScale / 2) *scalingInverse,
@@ -146,7 +145,7 @@ function draw() {
         })
         // Draw zoom window
         push()
-        translate(mouseX - zoomWindowSize / 2, mouseY - zoomWindowSize / 2)
+        translate(mouseX - zoomWindowSize - 5, mouseY - zoomWindowSize - 5)
         scale(zoomScale)
         image(zoomGraphics, 0, 0)
         pop()
@@ -157,8 +156,7 @@ function draw() {
     text(`F-stop: ${fToPretty(currF)}`, FstopXpos, uiLabelY)
     text(`Shutter: ${sToPretty(currS)}`, ShutterXpos, uiLabelY)
     text(`ISO: ${iToPretty(currI)}`, IsoXpos, uiLabelY)
-    text(`WB: ${currWbValue}K`, WbXpos, uiLabelY)
-    text("Press and Hold to zoom", ZoomTextXpos, uiElementY)
+    text(`White Balance: ${currWbValue}K`, WbXpos, uiLabelY)
     textSize(14)
     textAlign(RIGHT, BOTTOM)
     text(creditsText, width - 10, height - 10)
@@ -168,7 +166,7 @@ function draw() {
 // Open github page when clicking on the credits
 function mouseClicked() {
     if (mouseY >= height - uiMargin &&
-        mouseX >= ZoomTextXpos + 200) {
+        mouseX >= WbXpos + elementsWidth*2 + elementsSpacing) {
         window.open("https://github.com/leocb/CameraSimulator");
     }
 }
