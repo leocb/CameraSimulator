@@ -4,7 +4,7 @@ This is a Camera Simulator App.
 
 ## Click here to open it: [▶ leocb.github.io/CameraSimulator](https://leocb.github.io/CameraSimulator)
 
-![Camera Simulator Preview](https://user-images.githubusercontent.com/8310271/224849388-7ec03c1c-cfe8-4e06-a66e-79ad7606ac82.png)
+![Camera Simulator Preview](https://user-images.githubusercontent.com/8310271/224900984-4e373c2c-7e5b-440c-b941-de0bc4f27e27.png)
 
 ### What's this?
 
@@ -15,6 +15,7 @@ This app allows you to:
 - Change the F-stop
 - Change the Shutter Speed
 - Change the ISO or set it to AUTO
+- Change the White Balance
 
 ## Credits
 
