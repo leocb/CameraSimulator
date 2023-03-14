@@ -83,7 +83,10 @@ function draw() {
         background(0)
         push()
         textAlign(CENTER, CENTER)
-        text(`Loading: ${Math.round(progress * 100, 2)}%`, width / 2, height / 2)
+        text(`Downloading: ${Math.round(progress * 100, 2)}%`, width / 2, height / 2)
+        if (progress >= 0.98){
+            text(`Initializing images, please wait...`, width / 2, height / 2 + 20)
+        }
         pop()
         return
     }
