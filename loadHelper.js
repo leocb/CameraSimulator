@@ -31,6 +31,7 @@ function preLoadImages() {
     ShutterSlider.style('visibility', 'hidden')
     IsoSlider.style('visibility', 'hidden')
     IsoAuto.style('visibility', 'hidden')
+    WbSlider.style('visibility', 'hidden')
 
     // ISO Overlay
     for (let i = 0; i < 5; i++) {
@@ -69,6 +70,7 @@ function doneLoading(loadedAsset) {
         FstopSlider.style('visibility', 'visible')
         ShutterSlider.style('visibility', 'visible')
         IsoAuto.style('visibility', 'visible')
+        WbSlider.style('visibility', 'visible')
     }
 }
 
@@ -163,3 +165,40 @@ function iToPretty(i) {
             return "12800"
     }
 }
+
+// Thanks https://academo.org/demos/colour-temperature-relationship/
+// Thanks http://www.vendian.org/mncharity/dir3/blackbody/
+// Assuming the photo has a difference of 1600K to this overlay - Effectively making the 5000k the white point
+const wbRgbTable = [            // Photo     Real
+    { r: 255, g: 195, b: 146 }, // 2000K     3600 
+    { r: 255, g: 201, b: 157 }, // 2200K
+    { r: 255, g: 206, b: 166 }, // 2400K
+    { r: 255, g: 211, b: 175 }, // 2600K
+    { r: 255, g: 215, b: 183 }, // 2800K
+    { r: 255, g: 220, b: 191 }, // 3000K
+    { r: 255, g: 224, b: 199 }, // 3200K
+    { r: 255, g: 228, b: 206 }, // 3400K     5000K
+    { r: 255, g: 232, b: 213 }, // 3600K 
+    { r: 255, g: 236, b: 219 }, // 3800K
+    { r: 255, g: 239, b: 225 }, // 4000K
+    { r: 255, g: 243, b: 231 }, // 4200K
+    { r: 255, g: 246, b: 237 }, // 4400K
+    { r: 255, g: 249, b: 242 }, // 4600K
+    { r: 255, g: 253, b: 248 }, // 4800K
+    { r: 255, g: 255, b: 255 }, // 5000K     6600K (White neutral)
+    { r: 250, g: 246, b: 255 }, // 5200K
+    { r: 243, g: 242, b: 255 }, // 5400K
+    { r: 237, g: 239, b: 255 }, // 5600K
+    { r: 232, g: 236, b: 255 }, // 5800K
+    { r: 228, g: 234, b: 255 }, // 6000K
+    { r: 224, g: 232, b: 255 }, // 6200K
+    { r: 221, g: 230, b: 255 }, // 6400K
+    { r: 218, g: 228, b: 255 }, // 6600K     8200K
+    { r: 216, g: 227, b: 255 }, // 6800K
+    { r: 214, g: 225, b: 255 }, // 7000K
+    { r: 212, g: 224, b: 255 }, // 7200K
+    { r: 210, g: 223, b: 255 }, // 7400K
+    { r: 208, g: 222, b: 255 }, // 7600K
+    { r: 206, g: 221, b: 255 }, // 7800K
+    { r: 205, g: 220, b: 255 }, // 8000K     9600K
+].reverse() // We invert the array order because this should show how the camera compensates the WB, not how the scene is lit

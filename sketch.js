@@ -1,5 +1,6 @@
 // Main
 let scaling
+let scalingInverse
 const imgW = 2048
 const imgH = 858
 const creditsText = "© Leonardo C. Bottaro - 2023\nOpen source @ github.com/leocb/CameraSimulator";
@@ -8,6 +9,7 @@ const creditsText = "© Leonardo C. Bottaro - 2023\nOpen source @ github.com/leo
 let FstopSlider
 let ShutterSlider
 let IsoSlider
+let WbSlider
 let IsoAuto
 let uiElementY
 let uiLabelY
@@ -17,13 +19,16 @@ const elementsSpacing = 40
 const FstopXpos = elementsSpacing / 2
 const ShutterXpos = FstopXpos + elementsWidth + elementsSpacing
 const IsoXpos = ShutterXpos + elementsWidth + elementsSpacing
-const ZoomTextXpos = IsoXpos + elementsWidth + elementsSpacing * 2
+const WbXpos = IsoXpos + elementsWidth + elementsSpacing
+const ZoomTextXpos = WbXpos + elementsWidth*2 + elementsSpacing
 
 // Values
 let currF = F1_4
 let currS = S120
 let currI = ISO200
 let currBgEv = 0
+let currWbValue
+let currWb
 
 // Overlay
 const IsoOverlayOverflow = (3000 - imgW) // ISO overlay image width - main image width
@@ -42,24 +47,33 @@ function setup() {
 
     // UI
     fill(255)
+    noStroke()
     textSize(16)
     textStyle(BOLD)
     textAlign(LEFT, CENTER)
 
     FstopSlider = createSlider(0, 2, currF)
     FstopSlider.size(elementsWidth)
+    FstopSlider.elt.addEventListener('input', updateValues)
     ShutterSlider = createSlider(0, 2, currS)
     ShutterSlider.size(elementsWidth)
+    ShutterSlider.elt.addEventListener('input', updateValues)
+    WbSlider = createSlider(2000, 8000, 5000, 200)
+    WbSlider.size(elementsWidth*2)
+    WbSlider.elt.addEventListener('input', updateValues)
+    IsoSlider = createSlider(0, 4, currI)
+    IsoSlider.size(elementsWidth)
+    IsoSlider.elt.addEventListener('input', updateValues)
 
     IsoAuto = createCheckbox("AUTO", true)
     IsoAuto.changed(() => {
         IsoSlider.style('visibility', IsoAuto.checked() ? "hidden" : "visible")
+        updateValues()
     })
 
-    IsoSlider = createSlider(0, 4, currI)
-    IsoSlider.size(elementsWidth)
 
     positionStuff()
+    updateValues()
 
     // Load everything
     preLoadImages()
@@ -73,13 +87,31 @@ function windowResized() {
 // position UI elements when resizing
 function positionStuff() {
     scaling = (windowWidth / imgW)
+    scalingInverse = 1/scaling
     resizeCanvas(windowWidth, scaling * imgH + uiMargin);
     uiElementY = imgH * scaling + uiMargin / 2;
     uiLabelY = uiElementY - 10;
     FstopSlider.position(FstopXpos, uiElementY)
     ShutterSlider.position(ShutterXpos, uiElementY)
     IsoSlider.position(IsoXpos, uiElementY)
-    IsoAuto.position(IsoXpos + elementsWidth - 18, uiElementY - 21)
+    WbSlider.position(WbXpos, uiElementY)
+    IsoAuto.position(IsoXpos, uiElementY - 41)
+}
+
+function updateValues() {
+    currF = FstopSlider.value()
+    currS = ShutterSlider.value()
+    currI = IsoSlider.value()
+    currWbValue = WbSlider.value()
+    currWb = wbRgbTable[(currWbValue / 200) - 10]
+
+    // Update ISO if Auto is enabled
+    if (IsoAuto.checked()) {
+        currI = currF + currS
+    }
+
+    // Background EV
+    currBgEv = (2 - currS) + currI
 }
 
 function draw() {
@@ -96,19 +128,6 @@ function draw() {
         return
     }
 
-    // Update values
-    currF = FstopSlider.value()
-    currS = ShutterSlider.value()
-    currI = IsoSlider.value()
-
-    // Update ISO if Auto is enabled
-    if (IsoAuto.checked()) {
-        currI = currF + currS
-    }
-
-    // Background EV
-    currBgEv = (2 - currS) + currI
-
     // Move ISO Noise
     IsoOverlayXpos = (IsoOverlayXpos + 40 + Math.random() * (IsoOverlayOverflow / 2)) % IsoOverlayOverflow
 
@@ -122,8 +141,8 @@ function draw() {
     if (mouseIsPressed && mouseY < imgH * scaling) {
         // Draw image relative to mouse pos
         drawMovie(zoomGraphics, {
-            x: (-mouseX + (zoomWindowSize / zoomScale) / zoomScale / 2) / scaling,
-            y: (-mouseY + (zoomWindowSize / zoomScale) / zoomScale / 2) / scaling
+            x: (-mouseX + (zoomWindowSize / zoomScale) / zoomScale / 2) *scalingInverse,
+            y: (-mouseY + (zoomWindowSize / zoomScale) / zoomScale / 2) *scalingInverse
         })
         // Draw zoom window
         push()
@@ -138,6 +157,7 @@ function draw() {
     text(`F-stop: ${fToPretty(currF)}`, FstopXpos, uiLabelY)
     text(`Shutter: ${sToPretty(currS)}`, ShutterXpos, uiLabelY)
     text(`ISO: ${iToPretty(currI)}`, IsoXpos, uiLabelY)
+    text(`WB: ${currWbValue}K`, WbXpos, uiLabelY)
     text("Press and Hold to zoom", ZoomTextXpos, uiElementY)
     textSize(14)
     textAlign(RIGHT, BOTTOM)
@@ -155,11 +175,14 @@ function mouseClicked() {
 
 // Draw the movie animation with the selected camera settings
 function drawMovie(graphics, offset) {
-    graphics.blendMode(BLEND)
     graphics.background(0)
     graphics.image(imgBg[currF][currBgEv], offset.x, offset.y);
     graphics.image(imgFan[currF][currS][currI][frameCount % 7], offset.x + 255, offset.y + 198);
+    graphics.blendMode(HARD_LIGHT)
+    graphics.fill(currWb.r-127, currWb.g-127, currWb.b-127)
+    graphics.rect(0, 0, imgW, imgH)
+    graphics.fill(255)
     graphics.blendMode(SCREEN)
     graphics.image(IsoOverlayGraphics[currI], - IsoOverlayXpos + offset.x, offset.y);
     graphics.blendMode(BLEND)
-}
+  }
