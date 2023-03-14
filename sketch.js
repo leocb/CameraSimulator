@@ -2,6 +2,7 @@
 let scaling
 const imgW = 2048
 const imgH = 858
+const creditsText = "© Leonardo C. Bottaro - 2023\nOpen source @ github.com/leocb/CameraSimulator";
 
 //UI
 let FstopSlider
@@ -59,13 +60,17 @@ function setup() {
     IsoSlider.size(elementsWidth)
 
     positionStuff()
+
+    // Load everything
     preLoadImages()
 }
 
+// update UI when resizing
 function windowResized() {
     positionStuff()
 }
 
+// position UI elements when resizing
 function positionStuff() {
     scaling = (windowWidth / imgW)
     resizeCanvas(windowWidth, scaling * imgH + uiMargin);
@@ -84,7 +89,7 @@ function draw() {
         push()
         textAlign(CENTER, CENTER)
         text(`Downloading: ${Math.round(progress * 100, 2)}%`, width / 2, height / 2)
-        if (progress >= 0.98){
+        if (progress >= 0.98) {
             text(`Initializing images, please wait...`, width / 2, height / 2 + 20)
         }
         pop()
@@ -129,13 +134,26 @@ function draw() {
     }
 
     // UI
+    push()
     text(`F-stop: ${fToPretty(currF)}`, FstopXpos, uiLabelY)
     text(`Shutter: ${sToPretty(currS)}`, ShutterXpos, uiLabelY)
     text(`ISO: ${iToPretty(currI)}`, IsoXpos, uiLabelY)
     text("Press and Hold to zoom", ZoomTextXpos, uiElementY)
+    textSize(14)
+    textAlign(RIGHT, BOTTOM)
+    text(creditsText, width - 10, height - 10)
+    pop()
 }
 
+// Open github page when clicking on the credits
+function mouseClicked() {
+    if (mouseY >= height - uiMargin &&
+        mouseX >= ZoomTextXpos + 200) {
+        window.open("https://github.com/leocb/CameraSimulator");
+    }
+}
 
+// Draw the movie animation with the selected camera settings
 function drawMovie(graphics, offset) {
     graphics.blendMode(BLEND)
     graphics.background(0)
